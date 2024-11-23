@@ -1,6 +1,7 @@
 import express, { Request, Response, NextFunction } from 'express';
 import path from 'path';
 import cors from 'cors'; // Import cors
+import helmet from 'helmet'; // Add this import
 
 import dotenv from 'dotenv';
 
@@ -8,6 +9,19 @@ dotenv.config();
 
 // Create Express app
 const app = express();
+
+// Add Helmet middleware for security headers
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"], // Only allow resources from the same origin by default
+      scriptSrc: ["'self'", "'unsafe-inline'"], // Adjust as needed
+      styleSrc: ["'self'", "'unsafe-inline'"], // Adjust as needed
+      imgSrc: ["'self'", "data:"], // Allow images from same origin and data URIs
+      connectSrc: ["'self'"], // Restrict connections to same origin
+    }
+  }
+}));
 
 // Define the port (use environment variable or default to 3000)
 const PORT: number = parseInt(process.env.PORT || '3000', 10);
