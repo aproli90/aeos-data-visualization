@@ -31,28 +31,34 @@ router.post('/api/analyze', async (req: any, res: any) => {
   try {
     const anthropic = new Anthropic({ apiKey: process.env.CLAUDE_API_KEY });
 
+    const startTime = Date.now();
     const message: any = await anthropic.messages.create({
-      model: 'claude-3-sonnet-20240229',
-      max_tokens: 1024,
+      model: 'claude-3-5-sonnet-20241022',
+      max_tokens: 2048,
       messages: [{
         role: 'user',
-        content: `Analyze this text and extract numerical data that can be visualized: "${text}"
-        Return a JSON object of the format:
+        content: `
+Analyze this text and extract numerical data that can be visualized: "${text}"
+Return a JSON object of the format:
 
-        {
-          "dataPoints": [
-            {"name": "Sales Q1", "value": 1200},
-            {"name": "Sales Q2", "value": 1500},
-            ...
-          ],
-          "recommendedChartType": "bar" | "line" | "pie" | "scatter" | "area",
-          "chartTypeExplanation": "Bar chart best shows comparative data across categories"
-        }
-        
-        Only return valid JSON, no other text.`
+{
+  "dataPoints": [
+    {"name": "Sales Q1", "value": 1200},
+    {"name": "Sales Q2", "value": 1500},
+    ...
+  ],
+  "recommendedChartType": "vertical_bar" | "horizontal_bar" | "line" | "pie" | "donut" | "scatter" | "area",
+  "chartTypeExplanation": "Bar chart best shows comparative data across categories"
+}
+
+Only return valid JSON, no other text.
+        `
       }],
       temperature: 0
     });
+    const endTime = Date.now();
+    const responseDuration = endTime - startTime;
+    console.log(`Claude API Response Time: ${responseDuration} ms`);
 
     if (!message.content[0].text) {
       return res.status(500).json({ error: 'No response from Claude' });
