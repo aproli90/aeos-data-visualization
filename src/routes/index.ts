@@ -47,7 +47,7 @@ Return a JSON object of the format:
     {"name": "Sales Q2", "value": 1500},
     ...
   ],
-  "recommendedChartType": "vertical_bar" | "horizontal_bar" | "line" | "pie" | "donut" | "scatter" | "area",
+  "recommendedChartType": "vertical_bar" | "horizontal_bar" | "line" | "area" | "pie" | "donut",
   "chartTypeExplanation": "Bar chart best shows comparative data across categories"
 }
 
