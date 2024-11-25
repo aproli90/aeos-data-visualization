@@ -27,6 +27,7 @@ router.post('/api/analyze', async (req: any, res: any) => {
   if (!text) {
     return res.status(400).json({ error: 'Text is required' });
   }
+  console.log('Received text:', text);
 
   try {
     const anthropic = new Anthropic({ apiKey: process.env.CLAUDE_API_KEY });
