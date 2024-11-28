@@ -43,13 +43,28 @@ Analyze this text and extract numerical data that can be visualized: "${text}"
 Return a JSON object of the format:
 
 {
-  "dataPoints": [
-    {"name": "Sales Q1", "value": 1200},
-    {"name": "Sales Q2", "value": 1500},
-    ...
+  "dataSeries": [
+    {
+      "name": "Sales",
+      "dataPoints": [
+        {"name": "Q1", "value": 1200},
+        {"name": "Q2", "value": 1500},
+        {"name": "Q3", "value": 1800},
+        {"name": "Q4", "value": 2100}
+      ]
+    },
+    {
+      "name": "Expenses",
+      "dataPoints": [
+        {"name": "Q1", "value": 900},
+        {"name": "Q2", "value": 1100},
+        {"name": "Q3", "value": 1300},
+        {"name": "Q4", "value": 1600}
+      ]
+    }
   ],
   "recommendedChartType": "vertical_bar" | "horizontal_bar" | "line" | "area" | "pie" | "donut",
-  "chartTypeExplanation": "Bar chart best shows comparative data across categories"
+  "chartTypeExplanation": "Line or bar chart best shows comparative multi-series data across categories.\nX axis represents quarter, Y axis represents Sales and Expenses values in units"
 }
 
 Only return valid JSON, no other text.
