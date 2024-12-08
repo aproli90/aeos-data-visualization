@@ -63,7 +63,7 @@ Return a JSON object of the format:
       ]
     }
   ],
-  "recommendedChartType": "vertical_bar" | "horizontal_bar" | "line" | "area" | "pie" | "donut",
+  "recommendedChartType": "vertical_bar" | "horizontal_bar" | "line" | "area" | "pie" | "donut" | "bar_race",
   "chartTypeExplanation": "Line or bar chart best shows comparative multi-series data across categories.\nX axis represents quarter, Y axis represents Sales and Expenses values in units"
 }
 
