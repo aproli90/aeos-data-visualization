@@ -3,43 +3,8 @@ import Anthropic from '@anthropic-ai/sdk';
 
 const router = express.Router();
 
-// Basic route
-router.get('/', (req: Request, res: Response) => {
-  res.send('Welcome to the Data Visualization Server!');
-});
-
-// Example of a more complex route with type safety
-router.get('/health', (req: Request, res: Response) => {
-  res.json({
-    status: 'healthy',
-    timestamp: new Date().toISOString()
-  });
-});
-
-// Define an interface for the request body
-interface AnalyzeRequestBody {
-  text: string;
-}
-
-router.post('/api/analyze', async (req: any, res: any) => {
-  const { text } = req.body;
-
-  if (!text) {
-    return res.status(400).json({ error: 'Text is required' });
-  }
-  console.log('Received text:', text);
-
-  try {
-    const anthropic = new Anthropic({ apiKey: process.env.CLAUDE_API_KEY });
-
-    const startTime = Date.now();
-    const message: any = await anthropic.messages.create({
-      model: 'claude-3-5-sonnet-20241022',
-      max_tokens: 2048,
-      messages: [{
-        role: 'user',
-        content: `
-Analyze this text and extract numerical data that can be visualized: "${text}"
+const SYSTEM_PROMPT = `
+Analyze the given text and extract numerical data that can be visualized.
 Return a JSON object of the format:
 
 {
@@ -68,9 +33,58 @@ Return a JSON object of the format:
 }
 
 Only return valid JSON, no other text.
-        `
+`
+
+// Basic route
+router.get('/', (req: Request, res: Response) => {
+  res.send('Welcome to the Data Visualization Server!');
+});
+
+// Example of a more complex route with type safety
+router.get('/health', (req: Request, res: Response) => {
+  res.json({
+    status: 'healthy',
+    timestamp: new Date().toISOString()
+  });
+});
+
+// Define an interface for the request body
+interface AnalyzeRequestBody {
+  text: string;
+}
+
+router.post('/api/analyze', async (req: any, res: any) => {
+  const { text } = req.body;
+
+  if (!text) {
+    return res.status(400).json({ error: 'Text is required' });
+  }
+  console.log('Received text:', text);
+
+  try {
+    const anthropic = new Anthropic({
+      apiKey: process.env.CLAUDE_API_KEY,
+      // defaultHeaders: {
+      //   'anthropic-beta': 'prompt-caching-2024-07-31'
+      // }
+    });
+
+    const startTime = Date.now();
+    const message: any = await anthropic.messages.create({
+      model: 'claude-3-5-sonnet-20241022',
+      max_tokens: 2048,
+      messages: [{
+        role: 'user',
+        content: text
       }],
-      temperature: 0
+      temperature: 0,
+      system: [{
+        type: 'text',
+        text: SYSTEM_PROMPT,
+        // cache_control: {
+        //   type: 'ephemeral'
+        // }
+      }]
     });
     const endTime = Date.now();
     const responseDuration = endTime - startTime;
